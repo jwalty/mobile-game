@@ -1,0 +1,46 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    background-color: grey;
+}
+
+#topRow {
+    height: 200px;
+}
+
+table, tr, td {
+    border: black solid 1px;
+    border-collapse: collapse;
+}
+
+td {
+    height: 50px;
+    width: 50px;
+    background-color: white;
+    vertical-align: top;
+}
+
+.player {
+    height: 30px;
+    width: 30px;
+    background-color: rgb(158, 218, 158);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.enemy {
+    height: 30px;
+    width: 30px;
+    background-color: red;
+    transition: 10s linear;
+}
