@@ -28,6 +28,7 @@ td {
     width: 50px;
     background-color: white;
     vertical-align: top;
+    padding: 2px;
 }
 
 .player {
@@ -61,4 +62,5 @@ td {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 5;
 }

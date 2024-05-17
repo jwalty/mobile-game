@@ -2,7 +2,7 @@
 let currentLanes = 3;
 let playerCount = 1;
 let enemyMovementSpeed = 1;
-let gateMovementSpeed = 6;
+let gateMovementSpeed = 3;
 
 createMap();
 
@@ -42,14 +42,11 @@ function spawnEnemy() {
     newEnemy.setAttribute('data-distance', 0);
     let newEnemyHealth = document.createElement('span');
     newEnemyHealth.id = "enemyHealth";
-    newEnemyHealth.textContent = 100;
+    newEnemyHealth.textContent = (Math.floor(Math.random() * 5) * playerCount) + 100;
     newEnemy.appendChild(newEnemyHealth);
 
     lane.appendChild(newEnemy);
 }
-
-//TODO gates that enhance player amount? power? something?
-
 //TODO score system that tracks 'distance travelled', powerups, enemies killed,
 
 //TODO unstoppable boss at the end??
@@ -89,7 +86,7 @@ function createPlayer() {
     return newPlayer;
 }
 
-//player 'shooting' functionality TODO generalize enemies for lane specificity
+//player 'shooting' functionality TODO multi-enemy support, how would I target the first enemy in line?
 function playerAttack() {
 
     let player = document.querySelector('.player');
@@ -109,21 +106,21 @@ function playerAttack() {
     }
 }
 
-function moveEnemy() {
-    let enemy = document.querySelector('.enemy');
-    let currentDistance = parseInt(enemy.getAttribute('data-distance'));
-
-    //remove if end of lane TODO: variable lane size    
-    if (currentDistance > 170) {
-        enemy.remove();
-        spawnEnemy();
-    }
-
-    //update distance
-    let newDistance = currentDistance + enemyMovementSpeed;
-    enemy.setAttribute('data-distance', newDistance);
-    enemy.style.transform = `translateY(${newDistance}px)`;
-
+function moveEnemies() {
+    let enemies = document.querySelectorAll('.enemy');
+    enemies.forEach((enemy) => {
+        let currentDistance = parseInt(enemy.getAttribute('data-distance'));
+        //remove if end of lane TODO: variable lane size    
+        if (currentDistance > 170) {
+            enemy.remove();
+            spawnEnemy();
+        }
+        //update distance
+        let newDistance = currentDistance + enemyMovementSpeed;
+        enemy.setAttribute('data-distance', newDistance);
+        enemy.style.transform = `translateY(${newDistance}px)`;
+    
+    })
 }
 
 function spawnGate() {
@@ -133,7 +130,7 @@ function spawnGate() {
     newGate.classList.add('gate');
     newGate.setAttribute('data-distance', 0);
     let newGateValue = document.createElement('span');
-    newGateValue.textContent = Math.floor(Math.random() * 10) -5;
+    newGateValue.textContent = Math.floor(Math.random() * 10) - 5;
     newGate.appendChild(newGateValue);
     lane.appendChild(newGate);
 }
@@ -142,26 +139,31 @@ function moveGates() {
 
     let player = document.querySelector('.player');
     let playerColumn = player.parentElement.getAttribute('data-bottom-column');
-    let gate = document.querySelector('.gate');
-    let currentDistance = parseInt(gate.getAttribute('data-distance'));
-    let gateColumn = gate.parentElement.getAttribute('data-top-column');
 
-    //remove if end of lane TODO: variable lane size    
-    if (currentDistance > 180) {
-        gate.remove();
-        if (playerColumn == gateColumn) {
-            playerCount += parseInt(gate.firstChild.textContent);
-            player.firstChild.textContent = playerCount;
-            if (playerCount <= 0) {
-                player.remove();
+    let gates = document.querySelectorAll('.gate');
+    gates.forEach((gate) => {
+        let currentDistance = parseInt(gate.getAttribute('data-distance'));
+        let gateColumn = gate.parentElement.getAttribute('data-top-column');
+    
+        //remove if end of lane TODO: variable lane size    
+        if (currentDistance > 180) {
+            gate.remove();
+            if (playerColumn == gateColumn) {
+                playerCount += parseInt(gate.firstChild.textContent);
+                player.firstChild.textContent = playerCount;
+                if (playerCount <= 0) {
+                    player.remove();
+                }
             }
         }
-    }
+    
+        //update distance
+        let newDistance = currentDistance + gateMovementSpeed;
+        gate.setAttribute('data-distance', newDistance);
+        gate.style.transform = `translateY(${newDistance}px)`;
 
-    //update distance
-    let newDistance = currentDistance + gateMovementSpeed;
-    gate.setAttribute('data-distance', newDistance);
-    gate.style.transform = `translateY(${newDistance}px)`;
+    });
+
 }
 
 
@@ -171,7 +173,7 @@ window.setInterval(function(){
     let enemy = document.querySelector('.enemy');
     if (enemy != null) {
         playerAttack();
-        moveEnemy();
+        moveEnemies();
     }
     let gate = document.querySelector('.gate');
     if (gate != null) {
@@ -181,4 +183,4 @@ window.setInterval(function(){
 
 window.setInterval(function(){
     spawnGate();
-}, 3000);
+}, 10000);
