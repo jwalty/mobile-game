@@ -42,5 +42,5 @@ td {
     height: 30px;
     width: 30px;
     background-color: red;
-    transition: 10s linear;
+    transition: linear 100ms;
 }
