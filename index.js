@@ -1,4 +1,50 @@
+//initial game setup and global variables
+let currentLanes = 3;
+let playerCount = 1;
+let enemyHealth = 100;
+createMap();
+
 //TODO automatic lane creation, variable lane amounts, variable lane length
+function createMap() {
+    let newMap = document.createElement('table');
+    let topRow = document.createElement('tr');
+    let bottomRow = document.createElement('tr');
+    newMap.appendChild(topRow);
+    newMap.appendChild(bottomRow);
+
+    for (let i=0; i < currentLanes; i++) {
+        let newBottomRow = document.createElement('td');
+        newBottomRow.setAttribute('data-bottom-column', i);
+        bottomRow.appendChild(newBottomRow);
+        let newTopRow = document.createElement('td');
+        newTopRow.setAttribute('data-top-column', i);
+        newTopRow.id = 'topRow';
+        topRow.appendChild(newTopRow);
+    }
+
+    document.body.appendChild(newMap);
+
+    //add new player
+    document.querySelector('[data-bottom-column="0"]').appendChild(createPlayer());
+
+    spawnEnemy();
+}
+
+
+function spawnEnemy() {
+    let laneValue = Math.floor(Math.random() * currentLanes);
+    let lane = document.querySelector(`[data-top-column="${laneValue}"]`);
+
+    let newEnemy = document.createElement('div');
+    newEnemy.classList.add('enemy');
+    newEnemy.setAttribute('data-distance', 0);
+    let newEnemyHealth = document.createElement('span');
+    newEnemyHealth.id = "enemyHealth";
+    newEnemyHealth.textContent = 100;
+    newEnemy.appendChild(newEnemyHealth);
+
+    lane.appendChild(newEnemy);
+}
 
 //TODO gates that enhance player amount? power? something?
 
@@ -8,35 +54,47 @@
 
 //player control key listeners TODO switch to switch/case
 document.body.addEventListener(('keydown'), (e) => {
+    let player = document.querySelector('.player');
+    let currentLane = parseInt(player.parentElement.getAttribute('data-bottom-column'));
     if (e.key == "ArrowLeft") {
-        changeLanes(document.getElementById('bottomLeft'));
+        if (currentLane != 0) {
+            changeLanes(currentLane - 1);
+        }
     } else if (e.key == "ArrowRight") {
-        changeLanes(document.getElementById('bottomRight'));
+        if (currentLane != (currentLanes-1)) {
+            changeLanes(currentLane + 1);
+        }
     }
 });
 
 //lane changing functionality 
 function changeLanes(targetLane) {
-    let currentPlayer = document.querySelector('.player');
-    currentPlayer.remove();
+    //delete current player
+    let player = document.querySelector('.player');
+    player.remove();
+
+    //move to desired lane
+    let lane = document.querySelector(`[data-bottom-column="${targetLane}"]`);
+    lane.appendChild(createPlayer());
+}
+
+
+
+function createPlayer() {
     let newPlayer = document.createElement('div');
     newPlayer.classList.add('player');
     let newPlayerCount = document.createElement('span');
     newPlayerCount.textContent = playerCount;
     newPlayer.appendChild(newPlayerCount);
-    targetLane.appendChild(newPlayer);
+    return newPlayer;
 }
-
-let playerCount = 1;
-let enemyHealth = 100;
 
 //player 'shooting' functionality TODO generalize enemies for lane specificity
 function playerAttack() {
     let enemy = document.querySelector('.enemy');
     let player = document.querySelector('.player');
-    enemy = document.querySelector('.enemy');
     if (enemyHealth > 0) {
-        if (player.parentElement.id == "bottomRight") {
+        if (player.getAttribute('[data-bottom-column]') == enemy.getAttribute('[data-top-column]')) {
             enemyHealth -= playerCount;
             enemy.textContent = enemyHealth;
         }
@@ -44,9 +102,7 @@ function playerAttack() {
         enemy.remove();
         playerCount++;
         player.textContent = playerCount;
-        spawnEnemy();
-    }
-
+        }
 }
 
 function moveEnemy() {
@@ -59,7 +115,6 @@ function moveEnemy() {
         enemy.remove();
     }
 
-
     //update distance
     let newDistance = currentDistance + movementSpeed;
     enemy.setAttribute('data-distance', newDistance);
@@ -71,6 +126,6 @@ function moveEnemy() {
 //gamerate
 let ticksPerSecond = 20;
 window.setInterval(function(){
-	playerAttack();
-    moveEnemy();
+	//playerAttack();
+    //moveEnemy();
 }, 1000 / ticksPerSecond);
