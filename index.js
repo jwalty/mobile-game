@@ -134,6 +134,19 @@ function spawnGate() {
     lane.appendChild(newGate);
 }
 
+function spawnMultigate() {
+    for (let i=0; i < currentLanes; i++) {
+        let lane = document.querySelector(`[data-top-column="${i}"]`);
+        let newGate = document.createElement('div');
+        newGate.classList.add('gate');
+        newGate.setAttribute('data-distance', 0);
+        let newGateValue = document.createElement('span');
+        newGateValue.textContent = Math.floor(Math.random() * 10) - 5;
+        newGate.appendChild(newGateValue);
+        lane.appendChild(newGate);
+    }
+}
+
 function moveGates() {
 
     let player = document.querySelector('.player');
@@ -181,5 +194,5 @@ window.setInterval(function(){
 }, 1000 / ticksPerSecond);
 
 window.setInterval(function(){
-    spawnGate();
-}, 10000);
+    spawnMultigate();
+}, 5000);
