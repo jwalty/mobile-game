@@ -91,11 +91,10 @@ function playerAttack() {
 
     let player = document.querySelector('.player');
     let playerColumn = player.parentElement.getAttribute('data-bottom-column');
-    let enemy = document.querySelector('.enemy');
-    let enemysColumn = enemy.parentElement.getAttribute('data-top-column');
-    let enemyHealth = parseInt(enemy.firstChild.textContent);
-
-    if (playerColumn == enemysColumn) {
+    let enemy = document.querySelector(`[data-top-column="${playerColumn}"]`).querySelector('.enemy');
+    //TODO feels sloppy null-checking this way
+    if (enemy != null) {
+        let enemyHealth = parseInt(enemy.firstChild.textContent);
         if (enemyHealth - playerCount <= 0) {
             enemy.remove();
             spawnEnemy();
