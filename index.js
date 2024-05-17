@@ -1,6 +1,8 @@
 //initial game setup and global variables
 let currentLanes = 3;
 let playerCount = 1;
+let enemyMovementSpeed = 1;
+
 createMap();
 
 //TODO variable lane length
@@ -21,7 +23,7 @@ function createMap() {
         topRow.appendChild(newTopRow);
     }
 
-    document.body.appendChild(newMap);
+    document.querySelector('.mapContainer').appendChild(newMap);
 
     //add new player
     document.querySelector('[data-bottom-column="0"]').appendChild(createPlayer());
@@ -88,25 +90,29 @@ function createPlayer() {
 
 //player 'shooting' functionality TODO generalize enemies for lane specificity
 function playerAttack() {
-    let enemy = document.querySelector('.enemy');
+
     let player = document.querySelector('.player');
-    let enemyHealth = enemy.firstChild.textContent;
-    if (enemyHealth - playerCount <= 0) {
-        enemy.remove();
-        playerCount++;
-        player.textContent = playerCount;
-        spawnEnemy();
-    } else {
-        if (parseInt(player.parentElement.getAttribute('data-bottom-column')) == parseInt(enemy.parentElement.getAttribute('data-top-column'))) {
+    let playersColumn = player.parentElement.getAttribute('data-bottom-column');
+    let enemy = document.querySelector('.enemy');
+    let enemysColumn = enemy.parentElement.getAttribute('data-top-column');
+    let enemyHealth = parseInt(enemy.firstChild.textContent);
+
+    if (playersColumn == enemysColumn) {
+        if (enemyHealth - playerCount <= 0) {
+            enemy.remove();
+            playerCount++;
+            player.textContent = playerCount;
+            spawnEnemy();
+        } else {
             enemyHealth -= playerCount;
-            enemy.textContent = enemyHealth;
+            enemy.firstChild.textContent = enemyHealth;
         }
+
     }
 }
 
 function moveEnemy() {
     let enemy = document.querySelector('.enemy');
-    let movementSpeed = 1;
     let currentDistance = parseInt(enemy.getAttribute('data-distance'));
 
     //remove if end of lane TODO: variable lane size    
@@ -116,7 +122,7 @@ function moveEnemy() {
     }
 
     //update distance
-    let newDistance = currentDistance + movementSpeed;
+    let newDistance = currentDistance + enemyMovementSpeed;
     enemy.setAttribute('data-distance', newDistance);
     enemy.style.transform = `translateY(${newDistance}px)`;
 

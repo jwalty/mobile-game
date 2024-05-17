@@ -11,6 +11,7 @@ body {
     align-items: center;
     height: 80vh;
     background-color: grey;
+    font-family: sans-serif;
 }
 
 #topRow {
@@ -36,6 +37,7 @@ td {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 12px;
 }
 
 .enemy {
@@ -43,4 +45,8 @@ td {
     width: 30px;
     background-color: red;
     transition: linear 100ms;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
 }
