@@ -1,10 +1,9 @@
 //initial game setup and global variables
 let currentLanes = 3;
 let playerCount = 1;
-let enemyHealth = 100;
 createMap();
 
-//TODO automatic lane creation, variable lane amounts, variable lane length
+//TODO variable lane length
 function createMap() {
     let newMap = document.createElement('table');
     let topRow = document.createElement('tr');
@@ -78,8 +77,6 @@ function changeLanes(targetLane) {
     lane.appendChild(createPlayer());
 }
 
-
-
 function createPlayer() {
     let newPlayer = document.createElement('div');
     newPlayer.classList.add('player');
@@ -93,16 +90,18 @@ function createPlayer() {
 function playerAttack() {
     let enemy = document.querySelector('.enemy');
     let player = document.querySelector('.player');
-    if (enemyHealth > 0) {
-        if (player.getAttribute('[data-bottom-column]') == enemy.getAttribute('[data-top-column]')) {
-            enemyHealth -= playerCount;
-            enemy.textContent = enemyHealth;
-        }
-    } else {
+    let enemyHealth = enemy.firstChild.textContent;
+    if (enemyHealth - playerCount <= 0) {
         enemy.remove();
         playerCount++;
         player.textContent = playerCount;
+        spawnEnemy();
+    } else {
+        if (parseInt(player.parentElement.getAttribute('data-bottom-column')) == parseInt(enemy.parentElement.getAttribute('data-top-column'))) {
+            enemyHealth -= playerCount;
+            enemy.textContent = enemyHealth;
         }
+    }
 }
 
 function moveEnemy() {
@@ -113,6 +112,7 @@ function moveEnemy() {
     //remove if end of lane TODO: variable lane size    
     if (currentDistance > 170) {
         enemy.remove();
+        spawnEnemy();
     }
 
     //update distance
@@ -126,6 +126,6 @@ function moveEnemy() {
 //gamerate
 let ticksPerSecond = 20;
 window.setInterval(function(){
-	//playerAttack();
-    //moveEnemy();
+	playerAttack();
+    moveEnemy();
 }, 1000 / ticksPerSecond);
