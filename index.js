@@ -28,7 +28,7 @@ function createMap() {
     //add new player
     document.querySelector('[data-bottom-column="0"]').appendChild(createPlayer());
 
-    spawnEnemy();
+    //spawnEnemy();
 }
 
 
@@ -107,7 +107,6 @@ function playerAttack() {
             enemyHealth -= playerCount;
             enemy.firstChild.textContent = enemyHealth;
         }
-
     }
 }
 
@@ -132,6 +131,9 @@ function moveEnemy() {
 //gamerate
 let ticksPerSecond = 20;
 window.setInterval(function(){
-	playerAttack();
-    moveEnemy();
+    let enemy = document.querySelector('.enemy');
+    if (enemy != null) {
+        playerAttack();
+        moveEnemy();
+    }   
 }, 1000 / ticksPerSecond);
