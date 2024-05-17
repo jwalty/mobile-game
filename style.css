@@ -38,15 +38,27 @@ td {
     justify-content: center;
     align-items: center;
     font-size: 12px;
+    transition: linear 100ms;
+
 }
 
 .enemy {
     height: 30px;
-    width: 30px;
+    width: 100%;
     background-color: red;
     transition: linear 100ms;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 12px;
+}
+
+.gate {
+    height: 20px;
+    width: 100%;
+    background-color: rgba(140, 90, 156, 0.418);
+    transition: linear 100ms;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

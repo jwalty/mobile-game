@@ -2,6 +2,7 @@
 let currentLanes = 3;
 let playerCount = 1;
 let enemyMovementSpeed = 1;
+let gateMovementSpeed = 6;
 
 createMap();
 
@@ -92,16 +93,14 @@ function createPlayer() {
 function playerAttack() {
 
     let player = document.querySelector('.player');
-    let playersColumn = player.parentElement.getAttribute('data-bottom-column');
+    let playerColumn = player.parentElement.getAttribute('data-bottom-column');
     let enemy = document.querySelector('.enemy');
     let enemysColumn = enemy.parentElement.getAttribute('data-top-column');
     let enemyHealth = parseInt(enemy.firstChild.textContent);
 
-    if (playersColumn == enemysColumn) {
+    if (playerColumn == enemysColumn) {
         if (enemyHealth - playerCount <= 0) {
             enemy.remove();
-            playerCount++;
-            player.textContent = playerCount;
             spawnEnemy();
         } else {
             enemyHealth -= playerCount;
@@ -127,6 +126,44 @@ function moveEnemy() {
 
 }
 
+function spawnGate() {
+    let laneValue = Math.floor(Math.random() * currentLanes);
+    let lane = document.querySelector(`[data-top-column="${laneValue}"]`);
+    let newGate = document.createElement('div');
+    newGate.classList.add('gate');
+    newGate.setAttribute('data-distance', 0);
+    let newGateValue = document.createElement('span');
+    newGateValue.textContent = Math.floor(Math.random() * 10) -5;
+    newGate.appendChild(newGateValue);
+    lane.appendChild(newGate);
+}
+
+function moveGates() {
+
+    let player = document.querySelector('.player');
+    let playerColumn = player.parentElement.getAttribute('data-bottom-column');
+    let gate = document.querySelector('.gate');
+    let currentDistance = parseInt(gate.getAttribute('data-distance'));
+    let gateColumn = gate.parentElement.getAttribute('data-top-column');
+
+    //remove if end of lane TODO: variable lane size    
+    if (currentDistance > 180) {
+        gate.remove();
+        if (playerColumn == gateColumn) {
+            playerCount += parseInt(gate.firstChild.textContent);
+            player.firstChild.textContent = playerCount;
+            if (playerCount <= 0) {
+                player.remove();
+            }
+        }
+    }
+
+    //update distance
+    let newDistance = currentDistance + gateMovementSpeed;
+    gate.setAttribute('data-distance', newDistance);
+    gate.style.transform = `translateY(${newDistance}px)`;
+}
+
 
 //gamerate
 let ticksPerSecond = 20;
@@ -135,5 +172,13 @@ window.setInterval(function(){
     if (enemy != null) {
         playerAttack();
         moveEnemy();
-    }   
+    }
+    let gate = document.querySelector('.gate');
+    if (gate != null) {
+        moveGates();
+    }
 }, 1000 / ticksPerSecond);
+
+window.setInterval(function(){
+    spawnGate();
+}, 3000);
