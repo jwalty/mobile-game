@@ -55,11 +55,11 @@ function spawnEnemy() {
 document.body.addEventListener(('keydown'), (e) => {
     let player = document.querySelector('.player');
     let currentLane = parseInt(player.parentElement.getAttribute('data-bottom-column'));
-    if (e.key == "ArrowLeft") {
+    if (e.key == "ArrowLeft" || e.key == "a") {
         if (currentLane != 0) {
             changeLanes(currentLane - 1);
         }
-    } else if (e.key == "ArrowRight") {
+    } else if (e.key == "ArrowRight" || e.key == "d") {
         if (currentLane != (currentLanes-1)) {
             changeLanes(currentLane + 1);
         }
